@@ -1,0 +1,95 @@
+UniqueCustomers = DISTINCTCOUNT(Customers[CustomerID])
+
+Avgsaleperorder  = AVERAGE(Orders[Sales])
+
+TotalProductCost = SUMX(Orders,Orders[Quantity]*RELATED(Products[UnitPrice]))
+
+Totalprofit  = VAR TOTALSALE = SUM(Orders[Sales])
+VAR Totalproductcost = SUMX(Orders,Orders[Quantity] * RELATED(Products[UnitPrice]))
+RETURN
+TOTALSALE - Totalproductcost
+
+
+SouthRegionsale  = CALCULATE([TotalSale],Customers[Region] = "South")
+
+PercentageCountribution = DIVIDE(SUM(Orders[Sales]),CALCULATE(SUM(Orders[Sales]),ALL(Products[Category])))
+
+
+Customersbytotalsales  =    RANKX(ALL(Orders[CustomerID]),[TotalSale],,DESC,Dense)
+
+CoorperateCustomerSales  = CALCULATE([TotalSale],Customers[Segment] = "Corporate")
+
+YTDSALES  = TOTALYTD([TotalSale],Orders[OrderDate])
+
+PrevMonthSales  = CALCULATE([TotalSale],DATEADD('Date'[Date],-1,MONTH))
+
+MOMGROWTH  = VAR CURENTMONTHSLES  = [TotalSale]
+VAR PREVMONTHSALES  = CALCULATE([TotalSale],DATEADD('Date'[Date],-1,MONTH))
+RETURN
+DIVIDE(CURENTMONTHSLES-PREVMONTHSALES,PREVMONTHSALES)
+
+TOTALRETURNEDORDERS  = COUNTROWS(FILTER(Orders,Orders[ReturnStatus] = "Returned"))
+
+TOTALRETURNEDORDERS  = CALCULATE(COUNTA(Orders[OrderID]),Orders[ReturnStatus] = "Returned")
+
+unniqueproductsold  = DISTINCTCOUNT(Products[ProductID])
+
+Highestsaleamount  = MAX(Orders[Sales])
+
+ORDERSQUSALES = CALCULATE([TotalSale],Orders[Quantity] >= 2)
+
+SouthConsumerHighQuantitySales  = CALCULATE([TotalSale],FILTER(Customers,Customers[Region] = "South" &&Customers[Segment] = "Consumer"),FILTER(Orders,Orders[Quantity] >= 2))
+
+AverageSalesPerCustomer = AVERAGEX(VALUES(Orders[CustomerID]),[TotalSale])
+
+
+SalesFromRepeatCustomers = SUMX(FILTER(VALUES(Orders[CustomerID]),COUNTROWS(Orders) > 1),[TotalSale])
+
+HighValueCustomerSales = SUMX(FILTER(VALUES(Orders[CustomerID]),CALCULATE([TotalSale] > 30000)),[TotalSale])
+
+TopCustomerSales =MAXX(VALUES(Orders[CustomerID]),[TotalSale])
+
+
+CustomerCountAboveTarget = COUNTROWS(FILTER(VALUES(Orders[CustomerID]),[TotalSale] > MAX(Customers[TargetSales])))
+
+
+SalesFromLowProfitProducts = CALCULATE([TotalSale],(Products[UnitCost]) > 5000)
+
+RepeatCustomerSalesContribution = DIVIDE(CALCULATE([TotalSale],FILTER(VALUES(Orders[CustomerID]),CALCULATE(COUNTA(Orders[OrderID])) > 1)),CALCULATE([TotalSale],ALL(Orders)))
+
+
+Total Transactions = COUNTROWS(Sales)
+
+Total Revenue = SUM(Sales[SalesAmount])
+
+Discount % = DIVIDE(SUM(Sales[DiscountAmount]),[Total Revenue],0)
+
+Order Value Category = IF(Sales[SalesAmount] > 1000,"High Value","Standerd")
+
+Electronics Revenue = calculate([Total Revenue],Products[Category] = "Electronics")
+
+Online Revenue Share % = DIVIDE(CALCULATE([Total Revenue],Sales[Channel] = "Online"),[Total Revenue])
+
+All Region Revenue = CALCULATE([Total Revenue],ALL(Customers[Region]))
+
+Revenue Ignoring Products = CALCULATE([Total Revenue],ALL(Products))
+
+Strict VIP Revenue = CALCULATE([Total Revenue],KEEPFILTERS(Customers[CustomerSegment] = "Vip"))
+
+Total COGS = sumx(Sales,Sales[Quantity] * related(Products[CostPrice]))
+
+Average Revenue per Customer = AVERAGEX( VALUES(Sales[CustomerID]),[Total Revenue])
+
+Product Revenue Rank = RANKX(ALL(Products[ProductID]),[Total Revenue],,DESC,Dense)
+
+Top 2 Customers Revenue = CALCULATE([Total Revenue],TOPN(2,ALL(Sales[CustomerID]),[Total Revenue],DESC))
+
+
+
+
+
+
+
+
+
+
